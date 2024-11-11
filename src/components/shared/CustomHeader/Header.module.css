@@ -1,0 +1,17 @@
+.header {
+  height: 10rem;
+  background-color: #ef5350;
+  width: 100%;
+  display: flex;
+  flex-direction: row !important;
+  justify-content: space-between;
+  .leftContainer {
+    width: 70%;
+    h2 {
+      color: #f2f2f2;
+    }
+  }
+  .rightContainer {
+    width: 30%;
+  }
+}
