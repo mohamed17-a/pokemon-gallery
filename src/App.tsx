@@ -9,7 +9,13 @@ const App = () => {
   return (
     <Layout>
       <CustomHeader />
-      <Content style={{ height: "95vh" }}>
+      <Content
+        style={{
+          height: "100vh",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/:id" element={<PokeDetails />} />

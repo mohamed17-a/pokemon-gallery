@@ -1,15 +1,38 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useQuery } from "@tanstack/react-query";
-import { getAllPokemons, getSinglePokemon } from "../service/services";
+import {
+  getAllPokemons,
+  getPokemonFlavorText,
+  getSinglePokemon,
+} from "../service/services";
 
 export const useGetPokemons = (page: number, limit: number) => {
-  // Fetch the list of all Pokemons
+  const lastPokeIndexInPage = page * limit;
+  const firstPokeIndexInPage = lastPokeIndexInPage - (limit - 1);
   const allResult = useQuery({
     queryKey: ["pokemons", page, limit],
     queryFn: () => getAllPokemons(page, limit),
   });
 
-  // Fetch details for each Pokemon in the list, only if allResult data is available
+  const flavorTextResult = useQuery({
+    queryKey: ["pokemonFlavor", page, limit],
+    queryFn: async () => {
+      const flavorTexts = await Promise.all(
+        Array.from({ length: limit }).map(async (_, index) => {
+          const pokemonId = firstPokeIndexInPage + index;
+          const response = await getPokemonFlavorText(pokemonId);
+
+          return (
+            response.data?.flavor_text_entries.find(
+              (entry: { language: { name: string; }; }) => entry.language.name === "en"
+            )?.flavor_text || "No description available"
+          );
+        })
+      );
+      return flavorTexts;
+    },
+    enabled: !!allResult.data, // Only fetch if allResult data is available
+  });
+
   const allDetailedData = useQuery({
     queryKey: ["singlePokemon", page, limit],
     queryFn: async () => {
@@ -19,12 +42,15 @@ export const useGetPokemons = (page: number, limit: number) => {
         )
       );
     },
-    enabled: !!allResult.data, // Only run if allResult data is available
+    enabled: !!allResult.data, 
   });
 
   return {
     ...allResult,
-    detailedData: allDetailedData.data?.map((data) => data.data), // Array of detailed data
+    flavorTexts: flavorTextResult.data || [],
+    detailedData: allDetailedData.data?.map((data) => data.data) || [],
     allData: allResult.data?.data,
+    isLoading: allResult.isLoading || flavorTextResult.isLoading || allDetailedData.isLoading,
+    isError: allResult.isError || flavorTextResult.isError || allDetailedData.isError,
   };
 };

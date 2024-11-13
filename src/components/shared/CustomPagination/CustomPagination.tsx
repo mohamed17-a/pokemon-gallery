@@ -40,7 +40,7 @@ const CustomPagination: React.FC<PaginationProps> = ({
     };
   }, [currentPage, totalPages]);
   return (
-    <Row justify="space-evenly" style={{ width: "100%" }}>
+    <Row justify="space-evenly" style={{ minWidth: "100%" }}>
       <Button
         onClick={handlePrevious}
         disabled={currentPage === 1}
@@ -48,6 +48,7 @@ const CustomPagination: React.FC<PaginationProps> = ({
         color="danger"
         variant="solid"
         size="large"
+        style={{ padding: "0rem 4rem" }}
       >
         PREVIOUS
       </Button>
@@ -58,6 +59,7 @@ const CustomPagination: React.FC<PaginationProps> = ({
         color="danger"
         variant="solid"
         size="large"
+        style={{ padding: "0rem 4rem" }}
       >
         NEXT
       </Button>
