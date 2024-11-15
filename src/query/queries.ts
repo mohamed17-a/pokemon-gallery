@@ -54,3 +54,22 @@ export const useGetPokemons = (page: number, limit: number) => {
     isError: allResult.isError || flavorTextResult.isError || allDetailedData.isError,
   };
 };
+
+export const useGetSinglePokemonDetails = (id:string)=>{
+  const allSingleResult = useQuery({
+    queryKey: ["pokemons", id],
+    queryFn: () => getSinglePokemon(`https://pokeapi.co/api/v2/pokemon/${id}/`),
+  });
+  
+  return {
+    ...allSingleResult,
+    singleData:allSingleResult?.data?.data,
+    statsNames: allSingleResult?.data?.data?.stats.map((item: { stat: { name: string; }; })=>(item?.stat?.name)),
+    statsBases:allSingleResult?.data?.data?.stats.map((item: { base_stat: string; })=>(item?.base_stat)),
+    abilities: allSingleResult?.data?.data?.abilities.map((item: { ability: { name: string; }; })=>(item?.ability?.name)),
+    moves:allSingleResult?.data?.data?.moves.map((item: { move: { name: string; }; })=>(item?.move?.name)),
+    tags:allSingleResult?.data?.data?.types?.map(
+      (element: { type: { name: string } }) => element?.type?.name
+    ),
+  }
+}
