@@ -4,6 +4,7 @@ import CustomCard from "../shared/CustomCard/CustomCard";
 import { useState } from "react";
 import CustomPagination from "../shared/CustomPagination/CustomPagination";
 import Title from "antd/es/typography/Title";
+import { useNavigate } from "react-router-dom";
 
 interface viewData {
   name: string;
@@ -17,6 +18,7 @@ interface viewData {
   description: string;
 }
 const Home: React.FC = () => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const pageLimit = 6;
   const {
@@ -47,7 +49,7 @@ const Home: React.FC = () => {
         gutter={[24, 24]}
         justify="center"
         align="middle"
-        style={{ minHeight: "90%" }}
+        style={{ height: "80%", paddingTop: "2rem" }}
       >
         {isError || isLoadingError ? (
           <Col>
@@ -69,12 +71,17 @@ const Home: React.FC = () => {
                 cardImg={pokemon.detail?.sprites.front_default || ""}
                 cardDescription={pokemon.description || ""}
                 tags={pokemon.tags}
+                handleClick={() =>
+                  navigate(
+                    `/pokemon/${pageLimit * (currentPage - 1) + (index + 1)}`
+                  )
+                }
               />
             </Col>
           ))
         )}
       </Row>
-      <Row style={{ width: "100%" }}>
+      <Row style={{ width: "100%", height: "20%", paddingTop: "10rem" }}>
         <CustomPagination
           currentPage={currentPage}
           totalPages={allData?.count}
