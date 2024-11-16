@@ -1,4 +1,5 @@
 import { Card, Tag } from "antd";
+import { toSnakeCase } from "../../../utilities/toSnakeCase";
 const { Meta } = Card;
 
 interface cardProps {
@@ -9,8 +10,8 @@ interface cardProps {
   handleClick: () => void;
 }
 const typeColors: { [key: string]: string } = {
-  grass: "green-inverse",
-  poison: "lime-inverse",
+  grass: "lime-inverse",
+  poison: "green-inverse",
   fire: "volcano-inverse",
   water: "blue-inverse",
   electric: "gold-inverse",
@@ -37,7 +38,7 @@ const CustomCard = ({
       />
     }
   >
-    <Meta title={cardName} description={cardDescription} />
+    <Meta title={toSnakeCase(cardName || "")} description={cardDescription} />
     {tags?.map((tag) => (
       <Tag
         style={{
@@ -50,7 +51,7 @@ const CustomCard = ({
         color={typeColors[tag]}
         key={tag}
       >
-        {tag}
+        {toSnakeCase(tag || "")}
       </Tag>
     ))}
   </Card>

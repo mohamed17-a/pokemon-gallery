@@ -2,13 +2,13 @@ import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Button, Card, Col, Image, Row, Tag } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { Tabs } from "antd";
-import type { TabsProps } from "antd";
 import { useGetSinglePokemonDetails } from "../../../query/queries";
 import Title from "antd/es/typography/Title";
+import { toSnakeCase } from "../../../utilities/toSnakeCase";
 
 const typeColors: { [key: string]: string } = {
-  grass: "green-inverse",
-  poison: "lime-inverse",
+  grass: "lime-inverse",
+  poison: "green-inverse",
   fire: "volcano-inverse",
   water: "blue-inverse",
   electric: "gold-inverse",
@@ -42,7 +42,7 @@ const PokeDetails = () => {
           <Row>
             <Image src={singleData?.sprites?.front_default} width={220}></Image>
             <Col>
-              <Title level={2}>{singleData?.name}</Title>
+              <Title level={2}>{toSnakeCase(singleData?.name || "")}</Title>
               {tags?.map((tag: string) => (
                 <Tag
                   style={{
@@ -55,13 +55,12 @@ const PokeDetails = () => {
                   color={typeColors[tag]}
                   key={tag}
                 >
-                  {tag}
+                  {toSnakeCase(tag || "")}
                 </Tag>
               ))}
             </Col>
           </Row>
           <Tabs
-            style={{ paddingTop: "4rem" }}
             defaultActiveKey="1"
             items={[
               {
@@ -70,13 +69,23 @@ const PokeDetails = () => {
                 children: (
                   <Row>
                     <Col>
-                      {statsNames?.map((name: string) => (
-                        <p key={name}>{name}</p>
+                      {statsNames?.map((name: string, index: number) => (
+                        <Title key={index} level={5}>
+                          {toSnakeCase(name || "")}
+                        </Title>
                       ))}
                     </Col>
-                    <Col style={{ paddingLeft: "1rem" }}>
-                      {statsBases?.map((base: string) => (
-                        <p key={base}>{base}</p>
+                    <Col
+                      style={{
+                        marginLeft: "1rem",
+                        paddingLeft: "1rem",
+                        borderLeft: "0.1rem solid gray",
+                      }}
+                    >
+                      {statsBases?.map((base: string, index: number) => (
+                        <Title key={index} level={5}>
+                          {base}
+                        </Title>
                       ))}
                     </Col>
                   </Row>
@@ -87,8 +96,19 @@ const PokeDetails = () => {
                 label: "MOVES",
                 children: (
                   <div>
-                    {moves?.map((move: string) => (
-                      <span key={move}>{move}</span>
+                    {moves?.map((move: string, index: number) => (
+                      <span
+                        key={index}
+                        style={{
+                          backgroundColor: "#f0f0f0",
+                          borderRadius: "0.6rem",
+                          margin: "0.5rem",
+                          fontWeight: "bold",
+                          display: "inline-block",
+                        }}
+                      >
+                        {toSnakeCase(move || "")}
+                      </span>
                     ))}
                   </div>
                 ),
@@ -99,7 +119,7 @@ const PokeDetails = () => {
                 children: (
                   <div>
                     {abilities?.map((name: string) => (
-                      <p key={name}>{name}</p>
+                      <p key={name}>{toSnakeCase(name || "")}</p>
                     ))}
                   </div>
                 ),
