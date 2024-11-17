@@ -1,10 +1,14 @@
 import { Col, Row, Skeleton } from "antd";
 import { useGetPokemons } from "../../query/queries";
 import CustomCard from "../shared/CustomCard/CustomCard";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import CustomPagination from "../shared/CustomPagination/CustomPagination";
 import Title from "antd/es/typography/Title";
 import { useNavigate } from "react-router-dom";
+
+interface HomeProps {
+  searchValue: string;
+}
 
 interface viewData {
   name: string;
@@ -17,10 +21,12 @@ interface viewData {
   tags: string[];
   description: string;
 }
-const Home: React.FC = () => {
+
+const Home: React.FC<HomeProps> = ({ searchValue }) => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const pageLimit = 6;
+
   const {
     allData,
     detailedData,
@@ -29,20 +35,33 @@ const Home: React.FC = () => {
     isError,
     isLoadingError,
   } = useGetPokemons(currentPage, pageLimit);
-  const combinedData =
-    allData?.results?.map(
-      (item: { name: string; url: string }, index: number) => ({
-        name: item.name,
-        url: item.url,
-        detail: detailedData ? detailedData[index] : null,
-        description: flavorTexts ? flavorTexts[index] : null,
-        tags: detailedData
-          ? detailedData[index]?.types?.map(
-              (element: { type: { name: string } }) => element?.type?.name
-            )
-          : null,
-      })
-    ) || [];
+
+  // Combine data and filter based on search value
+  const combinedData = useMemo(() => {
+    const rawData =
+      allData?.results?.map(
+        (item: { name: string; url: string }, index: number) => ({
+          name: item.name,
+          url: item.url,
+          detail: detailedData ? detailedData[index] : null,
+          description: flavorTexts ? flavorTexts[index] : null,
+          tags: detailedData
+            ? detailedData[index]?.types?.map(
+                (element: { type: { name: string } }) => element.type.name
+              )
+            : [],
+        })
+      ) || [];
+
+    if (searchValue.trim() !== "") {
+      return rawData.filter((pokemon: { name: string }) =>
+        pokemon.name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    }
+
+    return rawData;
+  }, [allData, detailedData, flavorTexts, searchValue]);
+
   return (
     <>
       <Row
@@ -53,9 +72,7 @@ const Home: React.FC = () => {
       >
         {isError || isLoadingError ? (
           <Col>
-            <Title level={1}>
-              Unfortunately, Error happened to fetch the data
-            </Title>
+            <Title level={1}>No Data</Title>
           </Col>
         ) : isLoading ? (
           Array.from({ length: 6 }).map((_, index) => (

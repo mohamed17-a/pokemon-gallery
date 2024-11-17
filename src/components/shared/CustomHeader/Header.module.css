@@ -13,5 +13,8 @@
   }
   .rightContainer {
     width: 30%;
+    .searchInput {
+      margin: 2rem 2rem;
+    }
   }
 }

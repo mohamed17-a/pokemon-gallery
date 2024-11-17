@@ -1,11 +1,14 @@
 import { Header } from "antd/es/layout/layout";
 import styles from "./Header.module.css";
 import pokeLogo from "../../../assets/pokeapi_logo.png";
-import { Flex, Typography } from "antd";
-import SearchInput from "../SearchInput/Search";
+import { Flex, Input, Typography } from "antd";
 const { Title } = Typography;
 
-const CustomHeader: React.FC = () => {
+interface CustomHeaderProps {
+  onChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const CustomHeader: React.FC<CustomHeaderProps> = ({ onChangeHandler }) => {
   return (
     <Header className={styles.header} color="danger">
       <Flex className={styles.leftContainer}>
@@ -13,7 +16,12 @@ const CustomHeader: React.FC = () => {
         <Title level={2}>Pokémon Gallery</Title>
       </Flex>
       <Flex className={styles.rightContainer}>
-        <SearchInput />
+        <Input
+          placeholder={`Search by name`}
+          allowClear
+          onChange={onChangeHandler}
+          className={styles.searchInput}
+        />
       </Flex>
     </Header>
   );

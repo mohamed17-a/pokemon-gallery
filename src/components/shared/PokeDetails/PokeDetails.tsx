@@ -5,6 +5,7 @@ import { Tabs } from "antd";
 import { useGetSinglePokemonDetails } from "../../../query/queries";
 import Title from "antd/es/typography/Title";
 import { toSnakeCase } from "../../../utilities/toSnakeCase";
+import { FC } from "react";
 
 const typeColors: { [key: string]: string } = {
   grass: "lime-inverse",
@@ -16,7 +17,7 @@ const typeColors: { [key: string]: string } = {
   normal: "default",
 };
 
-const PokeDetails = () => {
+const PokeDetails: FC = () => {
   const params = useParams();
   const navigate = useNavigate();
   const { singleData, statsBases, statsNames, moves, abilities, tags } =

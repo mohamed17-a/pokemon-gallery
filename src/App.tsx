@@ -4,11 +4,16 @@ import Home from "./components/Home/Home";
 import PokeDetails from "./components/shared/PokeDetails/PokeDetails";
 import NotFound from "./components/shared/NotFound/NotFound";
 import { Route, Routes } from "react-router-dom";
+import { useState } from "react";
 
 const App = () => {
+  const [searchValue, setSearchValue] = useState<string>("");
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
   return (
     <Layout>
-      <CustomHeader />
+      <CustomHeader onChangeHandler={onChangeHandler} />
       <Content
         style={{
           height: "100vh",
@@ -17,7 +22,7 @@ const App = () => {
         }}
       >
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home searchValue={searchValue} />} />
           <Route path="/pokemon/:id" element={<PokeDetails />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
